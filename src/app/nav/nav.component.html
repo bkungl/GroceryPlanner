@@ -1,0 +1,23 @@
+<!-->
+<div class="container">
+    <ul>
+    <li><a routerLink="/menu" routerLinkActive="active">First Component</a></li>
+    <li><a routerLink="/favorites" routerLinkActive="active">Second Component</a></li>
+    <li><a routerLink="/custom" routerLinkActive="active">Second Component</a></li>
+    <li><a routerLink="/groceries" routerLinkActive="active">Second Component</a></li>
+  </ul>
+</div>
+<!-->
+<br>
+<div class="ctn row">
+    <div class="col-xs-6 col-md-6 col-lg-6 child" [routerLink]="['/menu']">
+        <p>Menu</p>
+    </div>
+    <div class="col-xs-6 col-md-6 col-lg-6 child" [routerLink]="['/groceries']">
+        <button mat-stroked-button color="primary">
+            <p>Grocery List</p>
+        </button>
+    </div>
+</div>
+
+<hr>

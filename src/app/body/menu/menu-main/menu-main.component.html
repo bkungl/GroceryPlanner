@@ -1,0 +1,98 @@
+<button (click)="addToGroceryList()">obs test</button>
+
+<div class="container">
+    <div class="header">
+    </div>
+
+    <!-->
+    want a method that goes through all meal types, makes a div for it 
+        then goes through foodlist and sees if the meallist.foodIDs = food.id
+
+    <!-->
+
+    <!--> Simplified for testing
+    <div class="" *ngFor="let date of dates">
+        <h1>Menu for {{date}}</h1>
+        <div class="" *ngFor="let meal of mealList">
+            {{meal.name}}
+
+            <div class="" *ngIf="meal.date == date">
+                {{meal.mealTypeName}}
+                <div class="" *ngFor="let nums of meal.foodID">
+                    <div class="" *ngFor="let food of foodList">
+                        <div class="" *ngIf="food.id == nums">
+                            {{food.foodName}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-->
+    <div *ngFor="let date of dates">
+        <h1>Menu for {{date}}</h1>
+        <div class="dragdrop">
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                <div class="row" *ngFor="let meal of mealList">
+                    <div class="example-box col-12 " *ngIf="meal.date == date" cdkDrag>
+                        <div class=" col-3">
+                            <b>{{meal.mealTypeName}}</b>
+                        </div>
+
+
+                        <div class="col-4">
+                            <div class="" *ngFor=" let nums of meal.foodID">
+                                <div class="" *ngFor="let food of foodList">
+                                    <div class="" *ngIf="food.id == nums">
+                                        {{food.foodName}}
+                                        <br>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+                        <div class="col-5 row">
+                            <div class="col-6">
+                                <button mat-stroked-button color="primary">
+                                    <mat-icon matSuffix>mode_edit</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button mat-stroked-button color="primary" (click)="deleteMeal(meal.mealTypeID, meal.date)">x</button>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="example-button-row">
+            <div class="buttons">
+                <button mat-stroked-button color="primary" (click)="addSnack(date)">+ Snack</button>
+                <button mat-stroked-button color="primary" (click)="logList()">+ Meal</button>
+            </div>
+            <div class="addSnack">
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
