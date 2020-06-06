@@ -1,4 +1,5 @@
 # Grocery
+This app stems from my difficulties as an elite athlete planning meals and knowing what quantity of each item. An unfortunate result is that food gets wasted or needlessly purchased. Im hoping this web app can solve this problem. 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
 
