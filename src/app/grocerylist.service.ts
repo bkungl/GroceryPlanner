@@ -32,6 +32,7 @@ export class GroceryListService {
     
     mealList = MEALLIST;
     groceryList = [];
+    unconsolidatedList = [];
     
     private subject = new Subject<any>();
     
@@ -73,43 +74,15 @@ export class GroceryListService {
         return this.subject.asObservable();
     }
     
-    /*
-    addToList(product:string) {
-        this.subject.next({name:product});
-    }
-    */
- /*
-    clearCart() {
-        this.subject.next();
-    }
-    */
  
     getList(): Observable<any>{
         //this.subject.push(new Ingredient(1, "test", 1));
         return this.subject.asObservable();
     }
     
-    
-    //these methods are for list comipiling:
-    //meant for use for longlist
-    //this uses name, not id or quantity to check if its the same 
-    //TODO analyuze... should i make it name && id?
-    /*
-    getIndex(list, Ingredient){
-        var index = -1;
-        var temp = 0;
-        for(let item in list){
-            //console.log("comparing " + list[item].name + " vs " + Ingredient.name);
-            if(list[item].name == Ingredient.name){
-                index = temp;
-                break;
-            }
-            temp = temp + 1;
-        }
-        //console.log("index is " + index);
-        return index;
+    getUnconsolidatedList(){
+        return this.unconsolidatedList;
     }
-    */
     
     
     
@@ -132,14 +105,22 @@ export class GroceryListService {
         //this looks something like
         //3 4 1 2 3 4 
         
-        console.log(meals);
+        //console.log(meals);
         var groceryList = [];
         
+        //this adds each grocery list ingredient to the grocerylist
         for(let k = 0; k < meals.length; k++){
             for(let i = 0; i < this.foodList.length; i++){
                 if(meals[k] == this.foodList[i].id){
                     for(let j = 0; j < this.foodList[i].ingredients.length; j++){
-                        groceryList.push(this.foodList[i].ingredients[j]);
+                        //this is bad
+                        //groceryList.push(this.foodList[i].ingredients[j]);
+                        
+                        //make new obejcect:
+                        var tempID = this.foodList[i].ingredients[j].ingredientID;
+                        var tempQuantity = this.foodList[i].ingredients[j].quantity;
+                        var tempName = this.foodList[i].ingredients[j].name;
+                        groceryList.push(new GroceryListItem(tempID, tempQuantity, tempName));
                     }
                 }
                 
@@ -147,15 +128,46 @@ export class GroceryListService {
         }
         
 
-        console.log(groceryList);
+        //send out uncosnolciated
+        //this.unconsolidatedList = groceryList;
         
-        //now, consolidate list
+        //console.log(groceryList);
+        
+        //now, consolidate list for repeat items.. ie if 2 grocery list items remove 1 and update quanitty of other
+        var deleteIndexes = [];
+        
+        //this is buggy bc index is 
+        //tempLimit = groceryList.length;
         for(let i = 0; i < groceryList.length; i++){
-            console.log(groceryList[i].name);
-            console.log(this.getIndexFromGL(groceryList, groceryList[i]));
+            //console.log(groceryList[i].name);
+            //console.log(groceryList.length);
+            var tempIndex = this.getIndexFromGL(groceryList, groceryList[i]);
+            //console.log(tempIndex);
+            
+            if(i != tempIndex){
+                //console.log("need to update " + groceryList[i].name);
+                
+                groceryList[tempIndex].quantity = groceryList[i].quantity + groceryList[tempIndex].quantity;
+                
+                //console.log("need quantity for the above item is " + groceryList[i].quantity);
+
+                // TODO not safe, dont edit list as im going through it
+                groceryList.splice(i, 1);
+                
+                //decrement iterator THIS IS DANGEROUS
+                i =  i = 1;
+                //implement this later
+                //deleteIndexes.push(tempIndex);
+                
+                
+            }
             
         }
         
+        //remove extras safely
+        
+        
+        //console.log(groceryList);
         
         
         this.groceryList = groceryList;
@@ -187,36 +199,6 @@ export class GroceryListService {
         }
     }
     
-    /*
-    friendlyList = [];
-    genUserFriendlyGroceryList(){
-        //make a list that has {id, name, quantity}
-        console.log(this.groceryList);
-        for(let i = 0; i < this.groceryList.length;i++){
-            var tempName = this.lookupIngredientNameByID(this.groceryList[i].ingredientID);
-            console.log(tempName);
-            
-            
-            
-            friendlyList.push();
-            
-        }
-        
-        
-    }
-    */
     
-    /*
-    //works .... or m,aybe not?
-    addToQuantity(iname, iquantity){
-        for(let item in this.groceryList){
-            if(this.groceryList[item].name == iname){
-                console.log(this.groceryList[item].quantity);
-                this.groceryList[item].quantity = this.groceryList[item].quantity + iquantity;
-                break;
-            }
-        }   
-    }
-    */
 }
  

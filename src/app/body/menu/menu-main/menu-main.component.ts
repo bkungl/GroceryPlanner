@@ -134,89 +134,99 @@ export class MenuMainComponent implements OnInit {
        
     }
     
-    //remove an item from menu
-    deleteMeal(id, date){
-        //new attempt
-        console.log("attempt delete");
-        //var foodsToDelete: number[];
-        var foodsToDelete = [];
+    addSnack2(date){
+        //on click, open up a dropdown for inputting a new recipe.
         
-        for(let meal in this.mealList){
-            //console.log("test");
-            if((date == this.mealList[meal].date) && (id == this.mealList[meal].mealTypeID)){
-                //console.log("should remove following recipe ");
-                for(let foods in this.mealList[meal].foodID){
-                    //console.log(this.mealList[meal].foodID[foods]);
-                    foodsToDelete.push(this.mealList[meal].foodID[foods]);
+    }
+    
+ 
+    getMealFromID(id, date){
+        for(let i = 0; i < this.mealList.length; i++){
+            if((this.mealList[i].mealTypeID == id) && (this.mealList[i].date == date)){
+                return this.mealList[i];
+            }
+        }
+    }
+    
+    getIngredientsFromRecipeID(recipeID){
+        //console.log(this.foodList);
+        var ingredientsArr = [];
+        for(let i = 0; i < this.foodList.length; i++){
+            if(this.foodList[i].id == recipeID){
+                for(let j = 0; j < this.foodList[i].ingredients.length; j++){
+                    ingredientsArr.push(this.foodList[i].ingredients[j]);
                 }
+            }   
+        }
+        
+        return ingredientsArr;
+    }
+    
+    getIndexOfItemOnGroceryList(id){
+        for(let i = 0; i < this.groceryList.length; i++){
+            if(this.groceryList[i].ingredientID == id){
+                return i;
+            }
+        }
+    }
+    
+    deleteMeal2(id, date){
+        //get all recipes in the meal
+        var deleteRecipes = [];
+        
+        var tempMeal = this.getMealFromID(id, date);
+       // console.log(tempMeal);
+        
+        for(let i = 0; i < tempMeal.foodID.length; i++){
+            deleteRecipes.push(tempMeal.foodID[i]);
+        }
+        
+      //  console.log(deleteRecipes);
+        
+        //get meal ingredients
+        var tempIngredients = [];
+        
+        //console.log(deleteRecipes);
+        
+        for(let i = 0; i < deleteRecipes.length; i++){
+            tempIngredients.push(this.getIngredientsFromRecipeID(deleteRecipes[i]));
+        }
+        //at this point have a list of ingredients to remove
+        
+        //need to get the GLI, which includes the quantity of that item
+       // console.log(tempIngredients);
+        
+       // console.log(this.groceryList);
+       
+        //for all recipes, go through the grocery list and either update quantity or remove
+       for(let i = 0; i < tempIngredients.length; i++){
+           for(let j = 0; j < tempIngredients[i].length; j++){
+               //console.log(tempIngredients[i][j].name);
+               var glIndex = this.groceryListService.getIndexFromGL(this.groceryList, tempIngredients[i][j]);
+               
+               this.groceryList[glIndex].quantity = this.groceryList[glIndex].quantity - tempIngredients[i][j].quantity;
+               if(this.groceryList[glIndex].quantity == 0){
+                   this.groceryList.splice(glIndex, 1);
+               }
+           }
+           
+           
+           
+       }
+       // console.log(this.groceryList);
+        
+        
+        
+        //delete the meal:
+        for(let i = 0; i < this.mealList.length; i++){
+            if(this.mealList[i].mealTypeID == id){
+                this.mealList.splice(i,1);
+                break;
             }
         }
         
-        console.log(foodsToDelete);
-        //left off here... need to make sure foodlist doesnt incorrectly display quantities
-        console.log(this.foodList);
-        
-        //var ingredientsToUpdate: Ingredient[];
-        var ingredientsToUpdate = [];
-        
-        //for all foods to delete
-        for(let fid in foodsToDelete){
-            for(let foods in this.foodList){
-                //implement HERE
-                if(this.foodList[foods].id == foodsToDelete[fid]){
-                    for(let ingredients in this.foodList[foods].ingredients){
-                        ingredientsToUpdate.push(this.foodList[foods].ingredients[ingredients])
-                    }
-                }
-            }
-        }
-        
-        console.log(ingredientsToUpdate);
-        
-        
-        //LEFT OFF MAKIGN THIS WORK BEFORE GOING TO FIX GROCERY LIST COMPILATION
-        //for all ingredeints, updategrocery list
-        
-        //need a date component of this...
-        for(let ingredient in ingredientsToUpdate){
-            for(let i = 0; i < this.groceryList.length; i++){
-                console.log(this.groceryList[i].id + " vs " + ingredientsToUpdate[ingredient].id);
-                if(this.groceryList[i].id == ingredientsToUpdate[ingredient].id){
-                    
-                    //how much of the quantity is left
-                     var tempAmtRemainder = this.groceryList[i].quantity - ingredientsToUpdate[ingredient].quantity;
-                     console.log(tempAmtRemainder);
-                    
-                    
-                    //break statement to prevent multiple delete
-                     i = this.groceryList.length +1;
-                   
-                }
-                
-            }
-            
-            /*
-                var temp = this.groceryList[items].quantity - this.foodList[recipe].ingredients[ingredient].quantity;                    
-                //if subtracticing is < 0, send console error about not being in this state
-                if(temp < 0){
-                    console.log("bad state; negative quantity");
-                }
-                //if == 0, remove
-                else if(temp == 0){
-                    console.log("should remove" + this.groceryList[index].name +"from grocery list");
-                    
-                }
-                
-                //if > 0, reduce quantiy
-                else{
-                    console.log("reduce quantity of " + this.groceryList[items].name + " from date " + this.mealList[meal].date);
-                }
-                
-                */
-        }
-        
-        
-        
+        //finally, update the list:
+        this.groceryListService.updateList(this.groceryList);
     }
     
     //getindex of an item
