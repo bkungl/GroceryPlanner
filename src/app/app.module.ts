@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
 import { MenuMainComponent } from './body/menu/menu-main/menu-main.component';
 import { MenuSideComponent } from './body/menu/menu-side/menu-side.component';
+import { AddSnackComponent } from './body/menu/menu-main/add-snack/add-snack.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { MenuSideComponent } from './body/menu/menu-side/menu-side.component';
     CustomRecipesComponent,
     GroceryListComponent,
     MenuMainComponent,
-    MenuSideComponent
+    MenuSideComponent,
+    AddSnackComponent
   ],
   imports: [
     BrowserModule,
